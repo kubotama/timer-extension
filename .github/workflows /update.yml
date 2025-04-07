@@ -1,0 +1,56 @@
+name: Check README Update on Version Change
+
+on:
+  pull_request:
+    paths:
+      - "package.json"
+
+jobs:
+  check-version-and-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Check version change and README update
+        id: version-check
+        run: |
+          # ターゲットブランチ（通常はmain/master）のHEADを取得
+          git fetch origin ${{ github.base_ref }}
+
+          # 変更されたファイルリストを取得
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}..HEAD)
+          README_CHANGED=$(echo "$CHANGED_FILES" | grep -c "README.md" || true)
+
+          # ターゲットブランチのpackage.jsonからバージョンを取得
+          git checkout origin/${{ github.base_ref }} -- package.json
+          BASE_VERSION=$(cat package.json | jq -r '.version')
+          git reset -- package.json
+
+          # PRのHEADにあるpackage.jsonからバージョンを取得
+          git checkout HEAD -- package.json
+          PR_VERSION=$(cat package.json | jq -r '.version')
+
+          echo "Base version: $BASE_VERSION"
+          echo "PR version: $PR_VERSION"
+
+          # メジャー.マイナー.パッチ形式のバージョンを分解
+          IFS='.' read -r BASE_MAJOR BASE_MINOR BASE_PATCH <<< "$BASE_VERSION"
+          IFS='.' read -r PR_MAJOR PR_MINOR PR_PATCH <<< "$PR_VERSION"
+
+          # メジャーまたはマイナーバージョンが変更されたかチェック
+          if [ "$PR_MAJOR" -gt "$BASE_MAJOR" ] || [ "$PR_MINOR" -gt "$BASE_MINOR" ]; then
+            echo "Major or minor version changed."
+
+            # READMEも更新されているかチェック
+            if [ "$README_CHANGED" -eq "0" ]; then
+              echo "::error::Version has been updated from $BASE_VERSION to $PR_VERSION (major or minor change), but README.md has not been updated. Please update README.md."
+              exit 1
+            else
+              echo "README.md has been updated as required."
+            fi
+          else
+            echo "Only patch version changed or no change. No README update required."
+          fi
