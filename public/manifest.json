@@ -1,0 +1,9 @@
+{
+  "manifest_version": 3,
+  "name": "Timer Chrome Extension",
+  "version": "1.0",
+  "description": "React, TypeScript, Vite で構築された Chrome 拡張機能(タイマー)",
+  "action": {
+    "default_popup": "index.html"
+  }
+}
