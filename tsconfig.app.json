@@ -20,7 +20,10 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+     /* Module Interop */
+     "esModuleInterop": true  // この行を追加
   },
   "include": ["src"]
 }

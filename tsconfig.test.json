@@ -17,8 +17,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "esModuleInterop": true,
-    "types": ["jest"] // 追加
+        "types": ["jest"] // 追加
   },
   "include": ["**/*.test.ts", "**/*.test.tsx"] // テストファイルのみを対象とする
 }
