@@ -17,7 +17,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-        "types": ["jest"] // 追加
+        "types": ["jest", "chrome"] // 追加
   },
   "include": ["**/*.test.ts", "**/*.test.tsx"] // テストファイルのみを対象とする
 }
