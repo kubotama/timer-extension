@@ -3,7 +3,15 @@
   "name": "Timer Chrome Extension",
   "version": "1.0",
   "description": "React, TypeScript, Vite で構築された Chrome 拡張機能(タイマー)",
+  "icons": {
+    "16": "blue-timer-icon-16.svg",
+    "48": "blue-timer-icon-48.svg"
+  },
   "action": {
-    "default_popup": "index.html"
+    "default_popup": "index.html",
+    "default_icon": {
+      "16": "red-timer-icon-16.svg",
+      "48": "red-timer-icon-48.svg"
+    }
   }
 }
