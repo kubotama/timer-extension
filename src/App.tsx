@@ -1,21 +1,32 @@
 import React, { useState } from "react";
 
 const App: React.FC = () => {
-  const timerSecond = 180;
-  const [buttonLabel, setButtonLabel] = useState("開始");
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
 
   const handleStartClick = () => {
-    setButtonLabel("停止");
+    setIsTimerRunning(true);
+  };
+
+  const handleStopClick = () => {
+    setIsTimerRunning(false);
   };
 
   return (
     <div>
-      <button style={{ width: "200px" }} onClick={handleStartClick}>
-        {buttonLabel}
-      </button>
-      <span aria-label="time-text">
-        {timerSecond.toString().padStart(3, "0")}
-      </span>
+      {isTimerRunning === false && (
+        <>
+          <button style={{ width: "200px" }} onClick={handleStartClick}>
+            開始
+          </button>
+        </>
+      )}
+      {isTimerRunning === true && (
+        <>
+          <button style={{ width: "200px" }} onClick={handleStopClick}>
+            停止
+          </button>
+        </>
+      )}
     </div>
   );
 };
