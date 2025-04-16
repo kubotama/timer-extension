@@ -5,7 +5,7 @@
   "description": "React, TypeScript, Vite で構築された Chrome 拡張機能(タイマー)",
   "permissions": ["storage", "alarms", "notifications"],
   "background": {
-    "service_worker": "background.js",
+    "service_worker": "assets/background.js",
     "type": "module"
   },
   "icons": {

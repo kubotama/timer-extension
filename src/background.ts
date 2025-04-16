@@ -31,7 +31,8 @@ chrome.runtime.onMessage.addListener(
 // タイマー開始処理
 const handleStartTimer = (duration: number): void => {
   chrome.storage.local.set({ isRunning: true, timeLeft: duration });
-  chrome.action.setBadgeText({ text: "▶" });
+  // chrome.action.setBadgeText({ text: "▶" });
+  chrome.action.setBadgeText({ text: duration.toString() });
   chrome.action.setBadgeBackgroundColor({ color: "#4CAF50" });
 
   // アラームを設定
@@ -43,7 +44,7 @@ const handleStartTimer = (duration: number): void => {
 // タイマー停止処理
 const handleStopTimer = (): void => {
   chrome.storage.local.set({ isRunning: false });
-  chrome.action.setBadgeText({ text: "■" });
+  // chrome.action.setBadgeText({ text: "■" });
   chrome.action.setBadgeBackgroundColor({ color: "#F44336" });
   chrome.alarms.clear("timer");
 };
@@ -54,17 +55,18 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     const data = await chrome.storage.local.get(["timeLeft", "isRunning"]);
     if (data.isRunning && data.timeLeft > 0) {
       const newTime = data.timeLeft - 1;
-      await chrome.storage.local.set({ timeLeft: newTime });
+      // await chrome.storage.local.set({ timeLeft: newTime });
+      chrome.action.setBadgeText({ text: newTime.toString() });
 
       if (newTime <= 0) {
         handleStopTimer();
-        // 通知を送信
-        chrome.notifications.create({
-          type: "basic",
-          iconUrl: "icon-48.png",
-          title: "タイマー終了",
-          message: "設定された時間が経過しました",
-        });
+        // // 通知を送信
+        // chrome.notifications.create({
+        //   type: "basic",
+        //   iconUrl: "icon-48.png",
+        //   title: "タイマー終了",
+        //   message: "設定された時間が経過しました",
+        // });
       }
     }
   }
