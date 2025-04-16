@@ -1,14 +1,9 @@
-// import { defineConfig } from 'vite'
-// import react from '@vitejs/plugin-react'
+/// <reference types="vitest" />
 
-// // https://vite.dev/config/
-// export default defineConfig({
-//   plugins: [react()],
-// })
-
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
 import path from "path";
+import { defineConfig } from "vite";
+
+import react from "@vitejs/plugin-react";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -25,6 +20,21 @@ export default defineConfig({
         chunkFileNames: `assets/[name].js`,
         assetFileNames: `assets/[name].[ext]`,
       },
+    },
+  },
+  test: {
+    // テストに関するAPIをグローバルに設定
+    globals: true,
+    // テスト環境の設定
+    environment: "jsdom",
+    // テストの設定ファイル
+    setupFiles: ["./vitest-setup.ts"],
+    // CSSファイルを処理する
+    css: true,
+    // テストのカバレッジを出力する設定
+    coverage: {
+      // @vitest/coverage-v8を設定
+      provider: "v8",
     },
   },
 });
