@@ -3,11 +3,12 @@
   "name": "Timer Chrome Extension",
   "version": "1.0",
   "description": "React, TypeScript, Vite で構築された Chrome 拡張機能(タイマー)",
-  "permissions": ["storage", "alarms", "notifications"],
+  "permissions": ["storage", "alarms", "offscreen"],
   "background": {
     "service_worker": "assets/background.js",
     "type": "module"
   },
+  "action": {},
   "icons": {
     "16": "timer.png"
   }
