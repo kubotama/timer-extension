@@ -13,4 +13,7 @@ function playAudio() {
   oscillator.connect(audioCtx.destination);
   oscillator.start();
   oscillator.stop(audioCtx.currentTime + 0.5);
+  oscillator.onended = () => {
+    audioCtx.close();
+  };
 }
