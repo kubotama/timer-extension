@@ -54,7 +54,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
       await chrome.storage.local.set({ timeLeft: newTime });
       chrome.action.setBadgeText({ text: newTime.toString() });
 
-      if (newTime == 0) {
+      if (newTime <= 0) {
         handleStartTimer(timerDuration); // タイマーをリセット
         await createOffscreen();
         chrome.runtime.sendMessage({
