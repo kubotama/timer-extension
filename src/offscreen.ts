@@ -1,10 +1,10 @@
 // src/offscreen.ts
 
-chrome.runtime.onMessage.addListener((msg) => {
+chrome.runtime.onMessage.addListener((msg: { play: string }) => {
   if ("play" in msg) playAudio();
 });
 
-function playAudio() {
+export function playAudio() {
   const AudioContext = self.AudioContext;
   const audioCtx = new AudioContext();
   const oscillator = audioCtx.createOscillator();
