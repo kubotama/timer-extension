@@ -17,8 +17,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    // "types": ["jest"] // 追加
-    "types": ["vitest/globals"] // vitestを使用する場合
+    "types": ["vitest/globals", "chrome"] // vitestを使用する場合
   },
   "include": ["**/*.test.ts", "**/*.test.tsx", "./vitest-setup.ts"] // テストファイルのみを対象とする
 }
