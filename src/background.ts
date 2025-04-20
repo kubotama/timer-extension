@@ -12,12 +12,16 @@ chrome.action.onClicked.addListener(() => {
   }
 });
 
+chrome.runtime.onStartup.addListener(() => {
+  console.log("Timer Extension started");
+
+  chrome.action.setBadgeText({ text: timerDuration.toString() });
+  chrome.action.setBadgeBackgroundColor({ color: "#F44336" });
+});
+
 // 拡張機能がインストールされたときの処理
 chrome.runtime.onInstalled.addListener(() => {
   console.log("Timer Extension installed");
-  chrome.action.setBadgeText({ text: timerDuration.toString() });
-  chrome.action.setBadgeBackgroundColor({ color: "#F44336" });
-
   // 初期設定を保存
   chrome.storage.local.set({
     isRunning: false,
