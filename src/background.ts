@@ -6,7 +6,7 @@ let endTimeMillisec = 0;
 
 chrome.action.onClicked.addListener(() => {
   if (timerState === "isPaused") {
-    handleStartTimer(timerDuration); // 3分
+    handleStartTimer(timerDuration);
   } else {
     handleStopTimer();
   }
@@ -19,20 +19,8 @@ chrome.runtime.onStartup.addListener(() => {
   chrome.action.setBadgeBackgroundColor({ color: "#F44336" });
 });
 
-// 拡張機能がインストールされたときの処理
-// chrome.runtime.onInstalled.addListener(() => {
-//   console.log("Timer Extension installed");
-//   // 初期設定を保存
-//   chrome.storage.local.set({
-//     // isRunning: false,
-//     timeLeft: timerDuration, // デフォルトの時間（秒）
-//   });
-// });
-
 // タイマー開始処理
 const handleStartTimer = (duration: number): void => {
-  // chrome.storage.local.set({ isRunning: true, timeLeft: duration });
-  // chrome.storage.local.set({ timeLeft: duration });
   // アラームを設定
   if (timerState !== "isRunning") {
     chrome.alarms.create(TIMER_LABEL, {
@@ -47,7 +35,6 @@ const handleStartTimer = (duration: number): void => {
 
 // タイマー停止処理
 const handleStopTimer = (): void => {
-  // chrome.storage.local.set({ isRunning: false });
   chrome.action.setBadgeText({ text: timerDuration.toString() });
   chrome.action.setBadgeBackgroundColor({ color: "#F44336" });
   chrome.alarms.clear(TIMER_LABEL);
@@ -57,19 +44,15 @@ const handleStopTimer = (): void => {
 // アラームリスナー
 chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name === TIMER_LABEL) {
-    // const data = await chrome.storage.local.get(["timeLeft", "isRunning"]);
-    // const data = await chrome.storage.local.get(["timeLeft"]);
     const nowMillisec = new Date().getTime();
     const difference = endTimeMillisec - nowMillisec;
     const remainingMillisec = Math.max(0, difference); // 残り時間（ミリ秒）
     if (timerState === "isRunning" && remainingMillisec > 0) {
-      // const newTime = data.timeLeft - 1;
-      // await chrome.storage.local.set({ timeLeft: newTime });
       chrome.action.setBadgeText({
         text: Math.round(remainingMillisec / 1000).toString(),
       });
     } else if (remainingMillisec <= 0) {
-      handleStartTimer(timerDuration); // タイマーをリセット
+      handleStartTimer(timerDuration); // タイマーを再スタート
       await createOffscreen();
       chrome.runtime.sendMessage({
         play: "",
