@@ -8,11 +8,11 @@ const timerSeconds = 180; // タイマーの時間=3分
 let endTimeMillisec = 0;
 
 const updateBadge = (
-  text: string,
+  seconds: number,
   bg_color: string,
   text_color: string = TIMER.TEXT_COLOR
 ): void => {
-  chrome.action.setBadgeText({ text });
+  chrome.action.setBadgeText({ text: seconds.toString().padStart(3, "0") });
   chrome.action.setBadgeTextColor({ color: text_color });
   chrome.action.setBadgeBackgroundColor({ color: bg_color });
 };
@@ -32,20 +32,20 @@ chrome.action.onClicked.addListener(() => {
 chrome.runtime.onStartup.addListener(() => {
   console.log("Timer Extension started");
 
-  updateBadge(timerSeconds.toString(), TIMER.STOP_BGCOLOR);
+  updateBadge(timerSeconds, TIMER.STOP_BGCOLOR);
 });
 
 // タイマー開始処理
 const handleStartTimer = (): TimerState => {
   // 終了時刻を計算
   endTimeMillisec = new Date().getTime() + timerSeconds * 1000;
-  updateBadge(timerSeconds.toString(), TIMER.START_BGCOLOR);
+  updateBadge(timerSeconds, TIMER.START_BGCOLOR);
   return "isRunning";
 };
 
 // タイマー停止処理
 const handleStopTimer = (): TimerState => {
-  updateBadge(timerSeconds.toString(), TIMER.STOP_BGCOLOR);
+  updateBadge(timerSeconds, TIMER.STOP_BGCOLOR);
   // アラームをクリア
   chrome.alarms.clear(TIMER.NAME);
   return "isPaused";
@@ -58,10 +58,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     const difference = endTimeMillisec - nowMillisec;
     const remainingMillisec = Math.max(0, difference); // 残り時間（ミリ秒）
     if (isTimerStarted === "isRunning" && remainingMillisec > 0) {
-      updateBadge(
-        Math.round(remainingMillisec / 1000).toString(),
-        TIMER.START_BGCOLOR
-      );
+      updateBadge(Math.round(remainingMillisec / 1000), TIMER.START_BGCOLOR);
     } else if (remainingMillisec <= 0) {
       handleStartTimer(); // タイマーを再スタート
       await createOffscreen();
