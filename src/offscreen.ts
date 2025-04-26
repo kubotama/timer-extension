@@ -1,7 +1,8 @@
 // src/offscreen.ts
+import { TIMER } from "./constants";
 
-chrome.runtime.onMessage.addListener((msg: { play: string }) => {
-  if ("play" in msg) playAudio();
+chrome.runtime.onMessage.addListener((msg: { type: string }) => {
+  if (msg.type === TIMER.MESSAGE_PLAY) playAudio();
 });
 
 export function playAudio() {
