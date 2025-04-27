@@ -13,7 +13,7 @@ export default defineConfig({
     outDir: "dist", // 出力ディレクトリを指定
     rollupOptions: {
       input: {
-        // main: path.resolve(__dirname, "index.html"), // ポップアップのエントリーポイント
+        main: path.resolve(__dirname, "index.html"), // ポップアップのエントリーポイント
         background: path.resolve(__dirname, "src/background.ts"), // background.tsを追加
         offscreen: path.resolve(__dirname, "src/offscreen.ts"), // offscreen.tsを追加
       },

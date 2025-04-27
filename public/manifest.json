@@ -8,7 +8,9 @@
     "service_worker": "assets/background.js",
     "type": "module"
   },
-  "action": {},
+  "action": {
+    "default_popup": "index.html"
+  },
   "icons": {
     "16": "timer.png"
   }

@@ -1,7 +1,7 @@
 import { TIMER } from "./constants";
 
 type TimerState = "isRunning" | "isPaused";
-let isTimerStarted: TimerState = "isPaused";
+export let isTimerStarted: TimerState = "isPaused";
 
 const timerSeconds = 180; // タイマーの時間=3分
 // const timerSeconds = 5; // テスト用
@@ -17,15 +17,17 @@ const updateBadge = (
   chrome.action.setBadgeBackgroundColor({ color: bg_color });
 };
 
-chrome.action.onClicked.addListener(() => {
-  if (isTimerStarted === "isPaused") {
-    chrome.alarms.create(TIMER.NAME, {
-      periodInMinutes: 1 / 60, // 1秒ごとに更新
-    });
-    isTimerStarted = handleStartTimer();
-  } else {
-    // アラームをクリア
-    isTimerStarted = handleStopTimer();
+chrome.runtime.onMessage.addListener((msg: { type: string }) => {
+  if (msg.type === TIMER.MESSAGE_CLICKED) {
+    if (isTimerStarted === "isPaused") {
+      chrome.alarms.create(TIMER.NAME, {
+        periodInMinutes: 1 / 60, // 1秒ごとに更新
+      });
+      isTimerStarted = handleStartTimer();
+    } else {
+      // アラームをクリア
+      isTimerStarted = handleStopTimer();
+    }
   }
 });
 

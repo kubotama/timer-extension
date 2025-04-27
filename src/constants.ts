@@ -4,4 +4,5 @@ export const TIMER = {
   STOP_BGCOLOR: "#902424",
   TEXT_COLOR: "#FFFFFF",
   MESSAGE_PLAY: "play",
+  MESSAGE_CLICKED: "message-clicked",
 };
