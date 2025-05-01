@@ -5,4 +5,18 @@ export const TIMER = {
   TEXT_COLOR: "#FFFFFF",
   MESSAGE_PLAY: "play",
   MESSAGE_CLICKED: "message-clicked",
+  MESSAGE_STATUS_REQUEST: "message-status-request",
+  MESSAGE_STATUS_RESPONSE: "message-status-response",
 };
+
+// types.ts
+export type StatusRequest = {
+  type: typeof TIMER.MESSAGE_STATUS_REQUEST;
+};
+
+export type StatusResponse = {
+  type: typeof TIMER.MESSAGE_STATUS_RESPONSE;
+  status: boolean;
+};
+
+export type MessageType = StatusRequest | StatusResponse;
