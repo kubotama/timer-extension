@@ -2,8 +2,6 @@
 import React from "react";
 
 import { MessageType, StatusResponse, TIMER } from "./constants";
-// import { isTimerStarted } from "./background";
-// import { isTimerStarted } from "./constants";
 
 const App: React.FC = () => {
   const [isTimerStarted, setIsTimerStarted] = React.useState(false);
@@ -27,36 +25,6 @@ const App: React.FC = () => {
     }
   }, [isTimerStarted]);
 
-  // return (
-  //   <>
-  //     {isTimerStarted === true && (
-  //       <button
-  //         onClick={() => {
-  //           chrome.runtime
-  //             .sendMessage({ type: TIMER.MESSAGE_CLICKED })
-  //             .then((status) => {
-  //               setIsTimerStarted(status);
-  //             });
-  //         }}
-  //       >
-  //         停止
-  //       </button>
-  //     )}
-  //     {isTimerStarted === false && (
-  //       <button
-  //         onClick={() => {
-  //           chrome.runtime
-  //             .sendMessage({ type: TIMER.MESSAGE_CLICKED })
-  //             .then((status) => {
-  //               setIsTimerStarted(status);
-  //             });
-  //         }}
-  //       >
-  //         開始
-  //       </button>
-  //     )}
-  //   </>
-  // );
   return (
     <>
       <button
