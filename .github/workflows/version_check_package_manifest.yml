@@ -20,7 +20,7 @@ jobs:
       - name: Get manifest.json version
         id: manifest-version
         run: |
-          MANIFEST_VERSION=$(jq -r .version manifest.json)
+          MANIFEST_VERSION=$(jq -r .version ./public/manifest.json)
           echo "MANIFEST_VERSION=$MANIFEST_VERSION" >> $GITHUB_ENV
 
       - name: Compare versions
