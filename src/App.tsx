@@ -12,9 +12,9 @@ const App: React.FC = () => {
   React.useEffect(() => {
     chrome.runtime
       .sendMessage({ type: TIMER.MESSAGE_STATUS_REQUEST } as MessageType)
-      .then((response: MessageType) => {
+      .then((response: StatusResponse) => {
         if (response.type === TIMER.MESSAGE_STATUS_RESPONSE) {
-          setIsTimerStarted((response as StatusResponse).status);
+          setIsTimerStarted(response.status);
         }
       });
   }, []);
@@ -64,9 +64,9 @@ const App: React.FC = () => {
         onClick={() => {
           chrome.runtime
             .sendMessage({ type: TIMER.MESSAGE_CLICKED } as MessageType)
-            .then((response: MessageType) => {
+            .then((response: StatusResponse) => {
               if (response.type === TIMER.MESSAGE_STATUS_RESPONSE) {
-                setIsTimerStarted((response as StatusResponse).status);
+                setIsTimerStarted(response.status);
               }
             });
         }}
