@@ -1,0 +1,32 @@
+name: Version Check
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  version-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get package.json version
+        id: package-version
+        run: |
+          PKG_VERSION=$(jq -r .version package.json)
+          echo "PACKAGE_VERSION=$PKG_VERSION" >> $GITHUB_ENV
+
+      - name: Get manifest.json version
+        id: manifest-version
+        run: |
+          MANIFEST_VERSION=$(jq -r .version manifest.json)
+          echo "MANIFEST_VERSION=$MANIFEST_VERSION" >> $GITHUB_ENV
+
+      - name: Compare versions
+        run: |
+          if [ "${{ env.PACKAGE_VERSION }}" != "${{ env.MANIFEST_VERSION }}" ]; then
+            echo "Package version: ${{ env.PACKAGE_VERSION }}"
+            echo "Manifest version: ${{ env.MANIFEST_VERSION }}"
+            exit 1
+          fi
