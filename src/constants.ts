@@ -17,6 +17,7 @@ export type StatusRequest = {
 export type StatusResponse = {
   type: typeof TIMER.MESSAGE_STATUS_RESPONSE;
   status: boolean;
+  timerSeconds: number;
 };
 
 export type MessageType = StatusRequest | StatusResponse;

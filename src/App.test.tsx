@@ -41,6 +41,7 @@ describe("App Component", () => {
     mockSendMessage.mockResolvedValue({
       type: TIMER.MESSAGE_STATUS_RESPONSE,
       status: false,
+      timerSeconds: 10,
     } as StatusResponse);
   });
 
@@ -66,6 +67,7 @@ describe("App Component", () => {
     mockSendMessage.mockResolvedValueOnce({
       type: TIMER.MESSAGE_STATUS_RESPONSE,
       status: false,
+      timerSeconds: 10,
     } as StatusResponse);
 
     // Act
@@ -76,7 +78,7 @@ describe("App Component", () => {
       const buttonElement = screen.getByRole("button", { name: "開始" });
       expect(buttonElement).toBeInTheDocument();
       const inputElement = screen.getByRole("textbox");
-      expect(inputElement).toBeInTheDocument();
+      expect(inputElement).toHaveValue("10");
     });
     // Verify the initial call was made
     expect(mockSendMessage).toHaveBeenCalledWith({
@@ -89,6 +91,7 @@ describe("App Component", () => {
     mockSendMessage.mockResolvedValueOnce({
       type: TIMER.MESSAGE_STATUS_RESPONSE,
       status: true,
+      timerSeconds: 10,
     } as StatusResponse);
 
     // Act
@@ -110,6 +113,7 @@ describe("App Component", () => {
     mockSendMessage.mockResolvedValueOnce({
       type: TIMER.MESSAGE_STATUS_RESPONSE,
       status: false,
+      timerSeconds: 10,
     } as StatusResponse);
     render(<App />);
 
@@ -120,6 +124,7 @@ describe("App Component", () => {
     mockSendMessage.mockResolvedValueOnce({
       type: TIMER.MESSAGE_STATUS_RESPONSE,
       status: true,
+      timerSeconds: 10,
     } as StatusResponse);
 
     // Act: Click the button
@@ -144,6 +149,7 @@ describe("App Component", () => {
     mockSendMessage.mockResolvedValueOnce({
       type: TIMER.MESSAGE_STATUS_RESPONSE,
       status: true,
+      timerSeconds: 10,
     } as StatusResponse);
     render(<App />);
 
@@ -154,6 +160,7 @@ describe("App Component", () => {
     mockSendMessage.mockResolvedValueOnce({
       type: TIMER.MESSAGE_STATUS_RESPONSE,
       status: false,
+      timerSeconds: 10,
     } as StatusResponse);
 
     // Act: Click the button

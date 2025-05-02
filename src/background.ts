@@ -33,6 +33,7 @@ chrome.runtime.onMessage.addListener(
     sendResponse({
       type: TIMER.MESSAGE_STATUS_RESPONSE,
       status: isTimerStarted,
+      timerSeconds: timerSeconds,
     });
     return true;
   }
