@@ -26,9 +26,14 @@ const App: React.FC = () => {
   }, [isTimerStarted]);
 
   return (
-    <>
+    <div style={{ display: "flex", justifyContent: "center" }}>
+      <input
+        type="text"
+        size={1}
+        style={{ fontSize: "1.5em", padding: "0.5em" }}
+      />
       <button
-        style={{ width: "5em" }}
+        style={{ width: "4em", marginLeft: "1em", fontSize: "1.5em" }}
         onClick={() => {
           chrome.runtime
             .sendMessage({ type: TIMER.MESSAGE_CLICKED } as MessageType)
@@ -41,7 +46,7 @@ const App: React.FC = () => {
       >
         {buttenText}
       </button>
-    </>
+    </div>
   );
 };
 

@@ -75,6 +75,8 @@ describe("App Component", () => {
     await waitFor(() => {
       const buttonElement = screen.getByRole("button", { name: "開始" });
       expect(buttonElement).toBeInTheDocument();
+      const inputElement = screen.getByRole("textbox");
+      expect(inputElement).toBeInTheDocument();
     });
     // Verify the initial call was made
     expect(mockSendMessage).toHaveBeenCalledWith({
