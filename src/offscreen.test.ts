@@ -68,7 +68,7 @@ describe("playAudio Function (Actual Implementation)", () => {
     expect(mockOscillator.start).toHaveBeenCalled();
     expect(mockOscillator.stop).toHaveBeenCalledWith(0.5); // currentTime(0) + 0.5
     expect(mockOscillator.frequency.setValueAtTime).toHaveBeenCalledWith(
-      440,
+      880,
       0
     ); // currentTime(0)
 
