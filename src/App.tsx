@@ -40,10 +40,14 @@ const App: React.FC = () => {
         style={{ width: "4em", marginLeft: "1em", fontSize: "1.5em" }}
         onClick={() => {
           chrome.runtime
-            .sendMessage({ type: TIMER.MESSAGE_CLICKED } as MessageType)
+            .sendMessage({
+              type: TIMER.MESSAGE_CLICKED,
+              timerSeconds: Number(timerSecondText),
+            } as MessageType)
             .then((response: StatusResponse) => {
               if (response.type === TIMER.MESSAGE_STATUS_RESPONSE) {
                 setIsTimerStarted(response.status);
+                setTimerSecondText(response.timerSeconds.toString());
               }
             });
         }}

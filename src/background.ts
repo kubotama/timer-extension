@@ -1,7 +1,11 @@
-import { TIMER } from "./constants";
+import {
+  TIMER,
+  TimerClicked,
+  DEFAULT_TIMER_SECOND,
+  MessageType,
+} from "./constants";
 
-const timerSeconds = 180; // タイマーの時間=3分
-// const timerSeconds = 5; // テスト用
+let timerSeconds = DEFAULT_TIMER_SECOND; // タイマーの時間=3分
 let endTimeMillisec = 0;
 
 let isTimerStarted: boolean = false;
@@ -11,14 +15,19 @@ const updateBadge = (
   bg_color: string,
   text_color: string = TIMER.TEXT_COLOR
 ): void => {
-  chrome.action.setBadgeText({ text: seconds.toString().padStart(3, "0") });
+  chrome.action.setBadgeText({ text: seconds.toString() });
   chrome.action.setBadgeTextColor({ color: text_color });
   chrome.action.setBadgeBackgroundColor({ color: bg_color });
 };
 
 chrome.runtime.onMessage.addListener(
-  (msg: { type: string }, __sender, sendResponse) => {
+  // (msg: { type: string }, __sender, sendResponse) => {
+  (msg: MessageType, __sender, sendResponse) => {
     if (msg.type === TIMER.MESSAGE_CLICKED) {
+      if ((msg as TimerClicked).timerSeconds > 0) {
+        timerSeconds = (msg as TimerClicked).timerSeconds;
+        chrome.storage.local.set({ [TIMER.STORAGE_NAME]: timerSeconds });
+      }
       if (isTimerStarted === false) {
         chrome.alarms.create(TIMER.NAME, {
           periodInMinutes: 1 / 60, // 1秒ごとに更新
@@ -30,19 +39,27 @@ chrome.runtime.onMessage.addListener(
         isTimerStarted = handleStopTimer();
       }
     }
-    sendResponse({
-      type: TIMER.MESSAGE_STATUS_RESPONSE,
-      status: isTimerStarted,
-      timerSeconds: timerSeconds,
+    chrome.storage.local.get([TIMER.STORAGE_NAME], (result) => {
+      timerSeconds = result[TIMER.STORAGE_NAME] || DEFAULT_TIMER_SECOND;
+      sendResponse({
+        type: TIMER.MESSAGE_STATUS_RESPONSE,
+        status: isTimerStarted,
+        timerSeconds: timerSeconds,
+      });
     });
+
     return true;
   }
 );
 
 chrome.runtime.onStartup.addListener(() => {
   console.log("Timer Extension started");
+  chrome.storage.local.get([TIMER.STORAGE_NAME], (result) => {
+    timerSeconds = result[TIMER.STORAGE_NAME] || DEFAULT_TIMER_SECOND;
+    handleStopTimer();
+  });
 
-  updateBadge(timerSeconds, TIMER.STOP_BGCOLOR);
+  // updateBadge(timerSeconds, TIMER.STOP_BGCOLOR);
 });
 
 // タイマー開始処理

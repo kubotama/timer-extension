@@ -7,7 +7,11 @@ export const TIMER = {
   MESSAGE_CLICKED: "message-clicked",
   MESSAGE_STATUS_REQUEST: "message-status-request",
   MESSAGE_STATUS_RESPONSE: "message-status-response",
-};
+  STORAGE_NAME: "timerSeconds",
+} as const;
+
+// export const DEFAULT_TIMER_SECOND: number 180;
+export const DEFAULT_TIMER_SECOND: number = 5;
 
 // types.ts
 export type StatusRequest = {
@@ -20,4 +24,9 @@ export type StatusResponse = {
   timerSeconds: number;
 };
 
-export type MessageType = StatusRequest | StatusResponse;
+export type TimerClicked = {
+  type: typeof TIMER.MESSAGE_CLICKED;
+  timerSeconds: number;
+};
+
+export type MessageType = StatusRequest | StatusResponse | TimerClicked;

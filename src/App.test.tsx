@@ -67,7 +67,7 @@ describe("App Component", () => {
     mockSendMessage.mockResolvedValueOnce({
       type: TIMER.MESSAGE_STATUS_RESPONSE,
       status: false,
-      timerSeconds: 10,
+      timerSeconds: 30,
     } as StatusResponse);
 
     // Act
@@ -78,7 +78,7 @@ describe("App Component", () => {
       const buttonElement = screen.getByRole("button", { name: "開始" });
       expect(buttonElement).toBeInTheDocument();
       const inputElement = screen.getByRole("textbox");
-      expect(inputElement).toHaveValue("10");
+      expect(inputElement).toHaveValue("30");
     });
     // Verify the initial call was made
     expect(mockSendMessage).toHaveBeenCalledWith({
@@ -135,6 +135,7 @@ describe("App Component", () => {
     expect(mockSendMessage).toHaveBeenCalledTimes(2);
     expect(mockSendMessage).toHaveBeenNthCalledWith(2, {
       type: TIMER.MESSAGE_CLICKED,
+      timerSeconds: 10,
     });
 
     // Assert: Wait for the button text to update to '停止'
@@ -149,7 +150,7 @@ describe("App Component", () => {
     mockSendMessage.mockResolvedValueOnce({
       type: TIMER.MESSAGE_STATUS_RESPONSE,
       status: true,
-      timerSeconds: 10,
+      timerSeconds: 20,
     } as StatusResponse);
     render(<App />);
 
@@ -160,7 +161,7 @@ describe("App Component", () => {
     mockSendMessage.mockResolvedValueOnce({
       type: TIMER.MESSAGE_STATUS_RESPONSE,
       status: false,
-      timerSeconds: 10,
+      timerSeconds: 20,
     } as StatusResponse);
 
     // Act: Click the button
@@ -170,6 +171,7 @@ describe("App Component", () => {
     expect(mockSendMessage).toHaveBeenCalledTimes(2);
     expect(mockSendMessage).toHaveBeenNthCalledWith(2, {
       type: TIMER.MESSAGE_CLICKED,
+      timerSeconds: 20,
     });
 
     // Assert: Wait for the button text to update to '開始'
@@ -209,6 +211,7 @@ describe("App Component", () => {
     expect(mockSendMessage).toHaveBeenCalledTimes(2);
     expect(mockSendMessage).toHaveBeenNthCalledWith(2, {
       type: TIMER.MESSAGE_CLICKED,
+      timerSeconds: 0,
     });
   });
 });
