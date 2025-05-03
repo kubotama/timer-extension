@@ -5,7 +5,6 @@ import {
   MessageType,
 } from "./constants";
 
-let timerSeconds = DEFAULT_TIMER_SECOND; // タイマーの時間=3分
 let endTimeMillisec = 0;
 
 let isTimerStarted: boolean = false;
@@ -24,8 +23,8 @@ chrome.runtime.onMessage.addListener(
   // (msg: { type: string }, __sender, sendResponse) => {
   (msg: MessageType, __sender, sendResponse) => {
     if (msg.type === TIMER.MESSAGE_CLICKED) {
+      const timerSeconds = (msg as TimerClicked).timerSeconds;
       if ((msg as TimerClicked).timerSeconds > 0) {
-        timerSeconds = (msg as TimerClicked).timerSeconds;
         chrome.storage.local.set({ [TIMER.STORAGE_NAME]: timerSeconds });
       }
       if (isTimerStarted === false) {
@@ -40,7 +39,7 @@ chrome.runtime.onMessage.addListener(
       }
     }
     chrome.storage.local.get([TIMER.STORAGE_NAME], (result) => {
-      timerSeconds = result[TIMER.STORAGE_NAME] || DEFAULT_TIMER_SECOND;
+      const timerSeconds = result[TIMER.STORAGE_NAME] || DEFAULT_TIMER_SECOND;
       sendResponse({
         type: TIMER.MESSAGE_STATUS_RESPONSE,
         status: isTimerStarted,
@@ -54,25 +53,27 @@ chrome.runtime.onMessage.addListener(
 
 chrome.runtime.onStartup.addListener(() => {
   console.log("Timer Extension started");
-  chrome.storage.local.get([TIMER.STORAGE_NAME], (result) => {
-    timerSeconds = result[TIMER.STORAGE_NAME] || DEFAULT_TIMER_SECOND;
-    handleStopTimer();
-  });
-
-  // updateBadge(timerSeconds, TIMER.STOP_BGCOLOR);
+  handleStopTimer();
 });
 
 // タイマー開始処理
 const handleStartTimer = (): boolean => {
   // 終了時刻を計算
-  endTimeMillisec = new Date().getTime() + timerSeconds * 1000;
-  updateBadge(timerSeconds, TIMER.START_BGCOLOR);
+  chrome.storage.local.get([TIMER.STORAGE_NAME], (result) => {
+    const timerSeconds = result[TIMER.STORAGE_NAME] || DEFAULT_TIMER_SECOND;
+
+    endTimeMillisec = new Date().getTime() + timerSeconds * 1000;
+    updateBadge(timerSeconds, TIMER.START_BGCOLOR);
+  });
   return true;
 };
 
 // タイマー停止処理
 const handleStopTimer = (): boolean => {
-  updateBadge(timerSeconds, TIMER.STOP_BGCOLOR);
+  chrome.storage.local.get([TIMER.STORAGE_NAME], (result) => {
+    const timerSeconds = result[TIMER.STORAGE_NAME] || DEFAULT_TIMER_SECOND;
+    updateBadge(timerSeconds, TIMER.STOP_BGCOLOR);
+  });
   // アラームをクリア
   chrome.alarms.clear(TIMER.NAME);
   return false;
