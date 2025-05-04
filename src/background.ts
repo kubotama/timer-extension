@@ -15,11 +15,11 @@ const updateBadge = (
 };
 
 chrome.runtime.onMessage.addListener(
-  // (msg: { type: string }, __sender, sendResponse) => {
-  (msg: MessageType, __sender, sendResponse) => {
-    if (msg.type === TIMER.MESSAGE_CLICKED) {
-      const timerSeconds = (msg as TimerClicked).timerSeconds;
-      if ((msg as TimerClicked).timerSeconds > 0) {
+  (message: MessageType, __sender, sendResponse) => {
+    if (message.type === TIMER.MESSAGE_CLICKED) {
+      const clickedMessage = message as TimerClicked;
+      const timerSeconds = clickedMessage.timerSeconds;
+      if (clickedMessage.timerSeconds > 0) {
         chrome.storage.local.set({ [TIMER.STORAGE_NAME]: timerSeconds });
       }
       if (isTimerStarted === false) {
