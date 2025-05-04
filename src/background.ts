@@ -18,7 +18,7 @@ chrome.runtime.onMessage.addListener(
       const clickedMessage = message as TimerClicked;
       const timerSeconds = clickedMessage.timerSeconds;
       if (clickedMessage.timerSeconds > 0) {
-        chrome.storage.local.set({ [TIMER.STORAGE_NAME]: timerSeconds });
+        chrome.storage.local.set({ [TIMER.TIMER_SECONDS]: timerSeconds });
       }
       if (isTimerStarted === false) {
         chrome.alarms.create(TIMER.NAME, {
@@ -31,9 +31,9 @@ chrome.runtime.onMessage.addListener(
         isTimerStarted = handleStopTimer();
       }
     }
-    chrome.storage.local.get([TIMER.STORAGE_NAME], (result) => {
+    chrome.storage.local.get([TIMER.TIMER_SECONDS], (result) => {
       const timerSeconds =
-        result[TIMER.STORAGE_NAME] || TIMER.DEFAULT_TIMER_SECOND;
+        result[TIMER.TIMER_SECONDS] || TIMER.DEFAULT_TIMER_SECOND;
       sendResponse({
         type: TIMER.MESSAGE_STATUS_RESPONSE,
         status: isTimerStarted,
@@ -53,9 +53,9 @@ chrome.runtime.onStartup.addListener(() => {
 // タイマー開始処理
 const handleStartTimer = (): boolean => {
   // 終了時刻を計算
-  chrome.storage.local.get([TIMER.STORAGE_NAME], (result) => {
+  chrome.storage.local.get([TIMER.TIMER_SECONDS], (result) => {
     const timerSeconds =
-      result[TIMER.STORAGE_NAME] || TIMER.DEFAULT_TIMER_SECOND;
+      result[TIMER.TIMER_SECONDS] || TIMER.DEFAULT_TIMER_SECOND;
 
     chrome.storage.local.set({
       [TIMER.END_TIME_MILLISECONDS]: new Date().getTime() + timerSeconds * 1000,
@@ -67,9 +67,9 @@ const handleStartTimer = (): boolean => {
 
 // タイマー停止処理
 const handleStopTimer = (): boolean => {
-  chrome.storage.local.get([TIMER.STORAGE_NAME], (result) => {
+  chrome.storage.local.get([TIMER.TIMER_SECONDS], (result) => {
     const timerSeconds =
-      result[TIMER.STORAGE_NAME] || TIMER.DEFAULT_TIMER_SECOND;
+      result[TIMER.TIMER_SECONDS] || TIMER.DEFAULT_TIMER_SECOND;
     updateBadge(timerSeconds, TIMER.STOP_BGCOLOR);
   });
   // アラームをクリア

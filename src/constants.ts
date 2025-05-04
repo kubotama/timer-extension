@@ -7,7 +7,7 @@ export const TIMER = {
   MESSAGE_CLICKED: "message-clicked",
   MESSAGE_STATUS_REQUEST: "message-status-request",
   MESSAGE_STATUS_RESPONSE: "message-status-response",
-  STORAGE_NAME: "timerSeconds",
+  TIMER_SECONDS: "timer-seconds",
   END_TIME_MILLISECONDS: "end-time-milli-seconds",
   DEFAULT_TIMER_SECOND: 180 as number,
 } as const;
