@@ -8,10 +8,8 @@ export const TIMER = {
   MESSAGE_STATUS_REQUEST: "message-status-request",
   MESSAGE_STATUS_RESPONSE: "message-status-response",
   STORAGE_NAME: "timerSeconds",
+  DEFAULT_TIMER_SECOND: 180 as number,
 } as const;
-
-// export const DEFAULT_TIMER_SECOND: number 180;
-export const DEFAULT_TIMER_SECOND: number = 5;
 
 // types.ts
 export type StatusRequest = {
