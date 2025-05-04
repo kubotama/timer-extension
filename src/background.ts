@@ -1,7 +1,5 @@
 import { TIMER, TimerClicked, MessageType } from "./constants";
 
-let endTimeMillisec = 0;
-
 let isTimerStarted: boolean = false;
 
 const updateBadge = (
@@ -59,7 +57,9 @@ const handleStartTimer = (): boolean => {
     const timerSeconds =
       result[TIMER.STORAGE_NAME] || TIMER.DEFAULT_TIMER_SECOND;
 
-    endTimeMillisec = new Date().getTime() + timerSeconds * 1000;
+    chrome.storage.local.set({
+      [TIMER.END_TIME_MILLISECONDS]: new Date().getTime() + timerSeconds * 1000,
+    });
     updateBadge(timerSeconds, TIMER.START_BGCOLOR);
   });
   return true;
@@ -74,6 +74,7 @@ const handleStopTimer = (): boolean => {
   });
   // アラームをクリア
   chrome.alarms.clear(TIMER.NAME);
+  chrome.storage.local.remove([TIMER.END_TIME_MILLISECONDS]);
   return false;
 };
 
@@ -81,6 +82,10 @@ const handleStopTimer = (): boolean => {
 chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name === TIMER.NAME) {
     const nowMillisec = new Date().getTime();
+    const result = await chrome.storage.local.get([
+      TIMER.END_TIME_MILLISECONDS,
+    ]);
+    const endTimeMillisec = result[TIMER.END_TIME_MILLISECONDS];
     const difference = endTimeMillisec - nowMillisec;
     const remainingMillisec = Math.max(0, difference); // 残り時間（ミリ秒）
     if (isTimerStarted && remainingMillisec > 0) {
