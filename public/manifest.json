@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Timer Chrome Extension",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "React, TypeScript, Vite で構築された Chrome 拡張機能(タイマー)",
   "permissions": ["storage", "alarms", "offscreen"],
   "background": {
