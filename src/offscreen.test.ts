@@ -29,56 +29,66 @@ describe("playAudio Function (Actual Implementation)", () => {
     const offscreenModule = await import("./offscreen");
     const actualPlayAudio = offscreenModule.playAudio;
 
-    // Web Audio APIのモック
-    const mockOscillator = {
-      connect: vi.fn(),
-      start: vi.fn(),
-      stop: vi.fn(),
-      frequency: {
-        setValueAtTime: vi.fn(),
-      },
-      type: "sine",
-      onended: null as (() => void) | null, // onended を null で初期化し、型を明確に
-    };
-
-    const mockAudioContext = {
-      createOscillator: vi.fn(() => mockOscillator),
-      currentTime: 0,
-      destination: {},
-      close: vi.fn(),
-    };
-
     // self.AudioContext をモック
+    const MockAudioContextConstructor = vi.fn(function (this: any) {
+      // this は新しく作成される AudioContext のインスタンス
+      this.createOscillator = vi.fn(() => {
+        // OscillatorNode のモック
+        const mockOscillator = {
+          connect: vi.fn(),
+          start: vi.fn(),
+          stop: vi.fn(),
+          frequency: {
+            setValueAtTime: vi.fn(),
+          },
+          type: "sine",
+          onended: null as (() => void) | null,
+        };
+        // インスタンスが保持する oscillator を更新
+        this.currentOscillator = mockOscillator;
+        return mockOscillator;
+      });
+      this.currentTime = 0;
+      this.destination = {};
+      this.close = vi.fn();
+    });
+
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    self.AudioContext = vi.fn(() => mockAudioContext);
+    self.AudioContext = MockAudioContextConstructor;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    window.AudioContext = self.AudioContext; // 念のため
+    window.AudioContext = MockAudioContextConstructor; // 念のため
 
     // モックされていない実際の playAudio 関数を呼び出す
     actualPlayAudio();
 
     // アサーション
-    expect(self.AudioContext).toHaveBeenCalled(); // または window.AudioContext
-    expect(mockAudioContext.createOscillator).toHaveBeenCalled();
-    expect(mockOscillator.connect).toHaveBeenCalledWith(
-      mockAudioContext.destination
+    expect(MockAudioContextConstructor).toHaveBeenCalled(); // AudioContext のコンストラクタが呼び出されたことを検証
+
+    // インスタンスを取得
+    const audioCtxInstance = MockAudioContextConstructor.mock.instances[0];
+    expect(audioCtxInstance.createOscillator).toHaveBeenCalled();
+
+    // インスタンスから oscillator のモックを取得
+    const oscillatorInstance = audioCtxInstance.currentOscillator; // MockAudioContextConstructor 内で設定したプロパティ
+    expect(oscillatorInstance.connect).toHaveBeenCalledWith(
+      audioCtxInstance.destination
     );
-    expect(mockOscillator.start).toHaveBeenCalled();
-    expect(mockOscillator.stop).toHaveBeenCalledWith(0.5); // currentTime(0) + 0.5
-    expect(mockOscillator.frequency.setValueAtTime).toHaveBeenCalledWith(
+    expect(oscillatorInstance.start).toHaveBeenCalled();
+    expect(oscillatorInstance.stop).toHaveBeenCalledWith(0.5); // currentTime(0) + 0.5
+    expect(oscillatorInstance.frequency.setValueAtTime).toHaveBeenCalledWith(
       880,
       0
     ); // currentTime(0)
 
     // onended と close の呼び出しもテストする
-    expect(mockOscillator.onended).toBeDefined(); // onended が設定されたか
+    expect(oscillatorInstance.onended).toBeDefined(); // onended が設定されたか
     // onended コールバックを手動で実行して close が呼ばれるか確認
-    if (mockOscillator.onended) {
-      mockOscillator.onended(); // onended コールバックを実行
+    if (oscillatorInstance.onended) {
+      oscillatorInstance.onended(); // onended コールバックを実行
     }
-    expect(mockAudioContext.close).toHaveBeenCalled(); // close が呼ばれたか
+    expect(audioCtxInstance.close).toHaveBeenCalled(); // close が呼ばれたか
   });
 });
 // });
