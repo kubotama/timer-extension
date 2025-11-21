@@ -27,5 +27,6 @@
      /* Module Interop */
      "esModuleInterop": true  // この行を追加
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "vitest-setup.ts"]
 }
