@@ -1,5 +1,5 @@
 // import { vi, it, expect, beforeEach, afterEach, describe } from "vitest"; // describe を追加
-import { vi, it, expect, describe } from "vitest"; // describe を追加
+import { vi, it, expect, describe, Mock } from "vitest"; // describe を追加
 
 // // --- chrome API のモック ---
 const mockChrome = {
@@ -29,12 +29,34 @@ describe("playAudio Function (Actual Implementation)", () => {
     const offscreenModule = await import("./offscreen");
     const actualPlayAudio = offscreenModule.playAudio;
 
+    // モック用のインターフェースを定義
+    interface MockOscillatorNode {
+      connect: ReturnType<typeof vi.fn>;
+      start: ReturnType<typeof vi.fn>;
+      stop: ReturnType<typeof vi.fn>;
+      frequency: {
+        setValueAtTime: ReturnType<typeof vi.fn>;
+      };
+      type: OscillatorType;
+      onended: (() => void) | null;
+    }
+
+    interface MockAudioContext {
+      createOscillator: Mock<() => MockOscillatorNode>;
+      currentTime: number;
+      destination: AudioDestinationNode;
+      close: Mock<() => void>;
+      currentOscillator?: MockOscillatorNode; // 内部で使うプロパティ
+    }
+
     // self.AudioContext をモック
-    const MockAudioContextConstructor = vi.fn(function (this: any) {
+    const MockAudioContextConstructor = vi.fn(function (
+      this: MockAudioContext
+    ) {
       // this は新しく作成される AudioContext のインスタンス
       this.createOscillator = vi.fn(() => {
         // OscillatorNode のモック
-        const mockOscillator = {
+        const mockOscillator: MockOscillatorNode = {
           connect: vi.fn(),
           start: vi.fn(),
           stop: vi.fn(),
@@ -42,14 +64,14 @@ describe("playAudio Function (Actual Implementation)", () => {
             setValueAtTime: vi.fn(),
           },
           type: "sine",
-          onended: null as (() => void) | null,
+          onended: null,
         };
         // インスタンスが保持する oscillator を更新
         this.currentOscillator = mockOscillator;
         return mockOscillator;
       });
       this.currentTime = 0;
-      this.destination = {};
+      this.destination = {} as AudioDestinationNode;
       this.close = vi.fn();
     });
 
@@ -70,8 +92,13 @@ describe("playAudio Function (Actual Implementation)", () => {
     const audioCtxInstance = MockAudioContextConstructor.mock.instances[0];
     expect(audioCtxInstance.createOscillator).toHaveBeenCalled();
 
-    // インスタンスから oscillator のモックを取得
-    const oscillatorInstance = audioCtxInstance.currentOscillator; // MockAudioContextConstructor 内で設定したプロパティ
+    const oscillatorInstance = audioCtxInstance.currentOscillator;
+    // null/undefinedチェックを追加して、non-null assertion (!) を避ける
+    if (!oscillatorInstance) {
+      // currentOscillatorが設定されていない場合はテストを失敗させる
+      throw new Error("oscillatorInstance should be defined");
+    }
+
     expect(oscillatorInstance.connect).toHaveBeenCalledWith(
       audioCtxInstance.destination
     );
@@ -84,6 +111,7 @@ describe("playAudio Function (Actual Implementation)", () => {
 
     // onended と close の呼び出しもテストする
     expect(oscillatorInstance.onended).toBeDefined(); // onended が設定されたか
+
     // onended コールバックを手動で実行して close が呼ばれるか確認
     if (oscillatorInstance.onended) {
       oscillatorInstance.onended(); // onended コールバックを実行
