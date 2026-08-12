@@ -3,29 +3,39 @@ export const TIMER = {
   START_BGCOLOR: "#4CAF50",
   STOP_BGCOLOR: "#902424",
   TEXT_COLOR: "#FFFFFF",
-  MESSAGE_PLAY: "play",
+  MESSAGE_PLAY: "message-play",
   MESSAGE_CLICKED: "message-clicked",
   MESSAGE_STATUS_REQUEST: "message-status-request",
   MESSAGE_STATUS_RESPONSE: "message-status-response",
+  MESSAGE_TEST: "message-test",
   TIMER_SECONDS: "timer-seconds",
   END_TIME_MILLISECONDS: "end-time-milli-seconds",
   DEFAULT_TIMER_SECOND: 180 as number,
-} as const;
+  IS_TIMER_STARTED: "isTimerStarted",
+} as const
 
 // types.ts
 export type StatusRequest = {
-  type: typeof TIMER.MESSAGE_STATUS_REQUEST;
-};
+  type: typeof TIMER.MESSAGE_STATUS_REQUEST
+}
 
 export type StatusResponse = {
-  type: typeof TIMER.MESSAGE_STATUS_RESPONSE;
-  status: boolean;
-  timerSeconds: number;
-};
+  type: typeof TIMER.MESSAGE_STATUS_RESPONSE
+  status: boolean
+  timerSeconds: number
+}
 
 export type TimerClicked = {
-  type: typeof TIMER.MESSAGE_CLICKED;
-  timerSeconds: number;
-};
+  type: typeof TIMER.MESSAGE_CLICKED
+  timerSeconds: number
+}
 
-export type MessageType = StatusRequest | StatusResponse | TimerClicked;
+export type TimerMessage = {
+  type: typeof TIMER.MESSAGE_TEST
+}
+
+export type MessageType =
+  | StatusRequest
+  | StatusResponse
+  | TimerClicked
+  | TimerMessage
