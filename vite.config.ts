@@ -1,26 +1,27 @@
 /// <reference types="vitest" />
 
-import path from "path";
-import { defineConfig } from "vitest/config";
+import path from "path"
+import { defineConfig } from "vitest/config"
+import react from "@vitejs/plugin-react"
 
-import react from "@vitejs/plugin-react";
-
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  publicDir: "public", // public ディレクトリを指定
+  publicDir: "public",
   build: {
-    outDir: "dist", // 出力ディレクトリを指定
+    outDir: "dist",
+    modulePreload: false, // modulepreload <link> タグの自動挿入を無効化
     rollupOptions: {
       input: {
-        main: path.resolve(__dirname, "index.html"), // ポップアップのエントリーポイント
-        background: path.resolve(__dirname, "src/background.ts"), // background.tsを追加
-        offscreen: path.resolve(__dirname, "src/offscreen.ts"), // offscreen.tsを追加
+        main: path.resolve(__dirname, "index.html"),
+        background: path.resolve(__dirname, "src/background.ts"),
+        offscreen: path.resolve(__dirname, "src/offscreen.ts"),
       },
       output: {
         entryFileNames: `assets/[name].js`,
         chunkFileNames: `assets/[name].js`,
         assetFileNames: `assets/[name].[ext]`,
+        // 共通モジュールを単一共有ファイルに切り出さずインライン化する
+        manualChunks: () => undefined,
       },
     },
   },
@@ -39,4 +40,4 @@ export default defineConfig({
       provider: "v8",
     },
   },
-});
+})
